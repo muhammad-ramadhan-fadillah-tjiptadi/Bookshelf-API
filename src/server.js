@@ -1,15 +1,25 @@
-const express = require("express");
-const app = express();
-const booksRouter = require("./routes/books");
+import Hapi from "@hapi/hapi";
+import routes from "./routes.js";
 
-// Middleware untuk parsing JSON
-app.use(express.json());
+const init = async () => {
+  const server = Hapi.server({
+    port: 9000,
+    host: "localhost",
+    routes: {
+      cors: {
+        origin: ["*"],
+      },
+    },
+  });
 
-// Routing untuk Bookshelf API
-app.use("/books", booksRouter);
+  server.route(routes);
 
-// Menjalankan server pada port 9000
-const PORT = process.env.PORT || 9000;
-app.listen(PORT, () => {
-  console.log(`Server berjalan pada http://localhost:${PORT}`);
-});
+  await server.start();
+  console.log(`Server berjalan pada ${server.info.uri}`);
+  console.log(
+    "Routes yang terdaftar:",
+    server.table().map((route) => route.path)
+  );
+};
+
+init();
