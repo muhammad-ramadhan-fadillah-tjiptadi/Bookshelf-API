@@ -65,7 +65,9 @@ export const addBookHandler = (request, h) => {
 
 export const getAllBooksHandler = () => ({
   status: "success",
-  data: { books },
+  data: {
+    books: books.map(({ id, name, publisher }) => ({ id, name, publisher })),
+  },
 });
 
 export const getBookByIdHandler = (request, h) => {
